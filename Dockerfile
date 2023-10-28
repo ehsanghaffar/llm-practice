@@ -17,8 +17,9 @@ FROM builder as dev-envs
 
 RUN <<EOF
 apt-get update
-apt-get install -y --no-install-recommends git
-python -m nltk.downloader punkt
+sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+sudo apt update
+sudo apt install gcc-11 g++-11
 EOF
 
 # RUN <<EOF
