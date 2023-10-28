@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  api:
+    container_name: personal_llm
+    build: .
+    command: uvicorn app.main:app --host 0.0.0.0
+    environment:
+      PORT: 8000
+    volumes:
+      - ./:/app
+    ports:
+      - "8000:8000"
+    restart: always
