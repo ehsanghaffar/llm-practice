@@ -8,10 +8,13 @@ from langchain.prompts import PromptTemplate
 from langchain.callbacks.manager import CallbackManager
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.llms.llamacpp import LlamaCpp
+import uvicorn
+
 from . import (
     config,
-    schema
-    )
+    schema,
+    utils,
+)
 
 
 # FASTAPI
@@ -21,6 +24,7 @@ app = FastAPI(
     redoc_url="/api/redocs",
     openapi_url="/openapi.json",
     default_response_class=UJSONResponse,
+    debug=True
 )
 settings = config.get_settings()
 
@@ -89,3 +93,18 @@ async def chatting(request: schema.ChatRequest):
     except Exception as error:
         print(error)
         return error
+
+
+config = uvicorn.Config(
+        app=app,
+        port=8000,
+        host="localhost",
+        log_level="info",
+        # ssl_keyfile=ssl_keyfile,
+        # ssl_certfile=ssl_certfile,
+        # ssl_keyfile_password=ssl_keyfile_password,
+        ws_max_size=1024 * 1024 * 1024,  # Setting max websocket size to be 1 GB
+)
+
+server = utils.Server(config=config)
+server.run_in_thread()
