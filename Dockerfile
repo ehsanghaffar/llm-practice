@@ -1,6 +1,6 @@
 # syntax = docker/dockerfile:1.4
 
-FROM tiangolo/uvicorn-gunicorn:python3.11-slim AS builder
+FROM tiangolo/uvicorn-gunicorn:python3.11 AS builder
 
 WORKDIR /app
 
@@ -15,9 +15,9 @@ update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 60 --slave /usr/b
 EOF
 
 COPY requirements.txt ./
-# RUN --mount=type=cache,target=/root/.cache/pip \
-#     pip install -r requirements.txt
-RUN pip install -r requirements.txt
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install -r requirements.txt
+# RUN pip install -r requirements.txt
 
 COPY . .
 
