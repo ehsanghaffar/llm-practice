@@ -1,3 +1,4 @@
+import logging
 import pathlib
 from typing import Optional
 from fastapi.responses import JSONResponse, UJSONResponse
@@ -5,10 +6,16 @@ from fastapi.staticfiles import StaticFiles
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from langchain.prompts import PromptTemplate
-from langchain.callbacks.manager import CallbackManager
-from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
+from langchain.callbacks.base import BaseCallbackManager
 from langchain.llms.llamacpp import LlamaCpp
 import uvicorn
+import asyncio
+import time
+from concurrent.futures import ProcessPoolExecutor
+from app.callback_manager import LoggingCallbackHandler
+
+from app.logger import configure_logging
+
 
 from . import (
     config,
@@ -16,17 +23,22 @@ from . import (
     utils,
 )
 
-
-# FASTAPI
-app = FastAPI(
-    title="Personal LLM",
-    docs_url="/api/docs",
-    redoc_url="/api/redocs",
-    openapi_url="/openapi.json",
-    default_response_class=UJSONResponse,
-    debug=True
-)
 settings = config.get_settings()
+
+def create_app() -> FastAPI:
+    configure_logging()
+    
+    app = FastAPI(
+        title="Personal LLM",
+        docs_url="/api/docs",
+        redoc_url="/api/redocs",
+        openapi_url="/openapi.json",
+        default_response_class=UJSONResponse,
+        debug=True
+    )
+    return app
+
+app = create_app()
 
 origins = ["*"]
 
@@ -57,28 +69,39 @@ Answer: Be sure to give the most correct answer to the question."""
 prompt = PromptTemplate(template=template, input_variables=["question"])
 
 # Callbacks support token-wise streaming
-callback_manager = CallbackManager([StreamingStdOutCallbackHandler()])
+# callback_manager = CallbackManager([StreamingStdOutCallbackHandler()])
+callback_manager = BaseCallbackManager([LoggingCallbackHandler()])
 
 
-# Make sure the model path is correct for your system!
-llm = LlamaCpp(
-    model_path="static/gpt4all-falcon-q4_0.gguf",
-    temperature=0.75,
-    max_tokens=2000,
-    top_p=1,
-    callback_manager=callback_manager,
-    verbose=True,  # Verbose is required to pass to the callback manager
-    streaming=False,
-) # type: ignore
+sbertmodel = None
 
-def chat_with_llama2(question: str):
-    try:
-        prompt = f"Question: {question}"
-        result = llm(prompt)
-        return result
-    except Exception as err:
-        print(err)
-        return err
+def create_model():
+    
+    return LlamaCpp(
+        model_path="static/gpt4all-falcon-q4_0.gguf",
+        temperature=0.75,
+        # max_tokens=2000,
+        top_p=1,
+        callback_manager=callback_manager,
+        verbose=True,  # Verbose is required to pass to the callback manager
+        streaming=False,
+    ) # type: ignore
+
+
+pool = ProcessPoolExecutor(max_workers=1, initializer=create_model)
+
+# async def simulateIO(vector):
+#     # simulate I/O call (e.g. Vector Similarity Search using a VectorDB)
+#     await asyncio.sleep(0.005)
+
+def model_predict(question: str):
+    prompt = f"Question: {question}"
+    logging.log(10, f"{question}")
+    llm = create_model()
+    logging.log(10, llm)
+    result = llm(prompt)
+    logging.log(30, f"{result}")
+    return result
 
 
 @app.get("/")
@@ -88,17 +111,19 @@ def read_index(q:Optional[str] = None):
 @app.post("/chat")
 async def chatting(request: schema.ChatRequest):
     try:
-        response = chat_with_llama2(question=request.question)
+        loop = asyncio.get_event_loop()
+        answer = await loop.run_in_executor(pool, model_predict(question=request.question))
         return {
-            "answer": f"{response}",
+            "answer": f"{answer}",
             "status": status.HTTP_200_OK
         }
     except Exception as error:
-        print(error)
+        logging.log(30, f"{error}")
         return {
             "error": f"{error}",
             "status": status.HTTP_500_INTERNAL_SERVER_ERROR
         }
+
 
 
 # config = uvicorn.Config(

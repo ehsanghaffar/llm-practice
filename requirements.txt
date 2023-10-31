@@ -5,3 +5,4 @@ python-dotenv==1.0.0
 uvicorn==0.23.2
 pydantic-settings==2.0.3
 ujson==5.8.0
+loguru==0.7.2
