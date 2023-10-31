@@ -1,5 +1,4 @@
 import logging
-import pathlib
 from typing import Optional
 from fastapi.responses import JSONResponse, UJSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -8,9 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from langchain.prompts import PromptTemplate
 from langchain.callbacks.base import BaseCallbackManager
 from langchain.llms.llamacpp import LlamaCpp
-import uvicorn
 import asyncio
-import time
 from concurrent.futures import ProcessPoolExecutor
 from app.callback_manager import LoggingCallbackHandler
 
@@ -20,7 +17,6 @@ from app.logger import configure_logging
 from . import (
     config,
     schema,
-    utils,
 )
 
 settings = config.get_settings()
@@ -96,11 +92,9 @@ pool = ProcessPoolExecutor(max_workers=1, initializer=create_model)
 
 def model_predict(question: str):
     prompt = f"Question: {question}"
-    logging.log(10, f"{question}")
     llm = create_model()
-    logging.log(10, llm)
     result = llm(prompt)
-    logging.log(30, f"{result}")
+    logging.log(10, f"{result}")
     return result
 
 
@@ -118,12 +112,11 @@ async def chatting(request: schema.ChatRequest):
             "status": status.HTTP_200_OK
         }
     except Exception as error:
-        logging.log(30, f"{error}")
+        logging.log(40, f"{error}")
         return {
             "error": f"{error}",
             "status": status.HTTP_500_INTERNAL_SERVER_ERROR
         }
-
 
 
 # config = uvicorn.Config(
