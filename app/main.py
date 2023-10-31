@@ -2,7 +2,7 @@ import pathlib
 from typing import Optional
 from fastapi.responses import JSONResponse, UJSONResponse
 from fastapi.staticfiles import StaticFiles
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from langchain.prompts import PromptTemplate
 from langchain.callbacks.manager import CallbackManager
@@ -89,10 +89,16 @@ def read_index(q:Optional[str] = None):
 async def chatting(request: schema.ChatRequest):
     try:
         response = chat_with_llama2(question=request.question)
-        return response
+        return {
+            "answer": f"{response}",
+            "status": status.HTTP_200_OK
+        }
     except Exception as error:
         print(error)
-        return error
+        return {
+            "error": f"{error}",
+            "status": status.HTTP_500_INTERNAL_SERVER_ERROR
+        }
 
 
 # config = uvicorn.Config(

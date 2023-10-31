@@ -40,6 +40,14 @@ This repository contains a FastAPI application that serves as a local personal c
 
 2. Access the API at `http://localhost:8000` in your web browser or through API client tools like `curl`, `httpie`, or Postman.
 
+## Using Docker
+
+```shell
+docker build -t llm .
+
+docker run -d -p 8800:8000 --name llm_app llm
+```
+
 ## API Endpoints
 
 - `/chatting`: Start a chat session with the LLM.
