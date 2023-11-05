@@ -1,6 +1,8 @@
-# Llama2 Selfhosted Chatbot API
+# EinLLM
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
+
+> Llama2 Self-hosted Chatbot API
 
 This repository contains a FastAPI application that serves as a local personal chatbot API. It allows you to interact with the Llama2 LLM (and other open-source LLMs) to have natural language conversations, generate text, and perform various language-related tasks.
 
@@ -29,6 +31,8 @@ This repository contains a FastAPI application that serves as a local personal c
    ```shell
    pip install -r requirements.txt
    ```
+
+> Do'nt forget move your Llama2 model to `/static` directory
 
 ## Usage
 

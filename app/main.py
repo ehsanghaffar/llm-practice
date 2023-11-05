@@ -25,7 +25,7 @@ def create_app() -> FastAPI:
     configure_logging()
     
     app = FastAPI(
-        title="Personal LLM",
+        title="Ein LLM",
         docs_url="/api/docs",
         redoc_url="/api/redocs",
         openapi_url="/openapi.json",
@@ -74,7 +74,7 @@ sbertmodel = None
 def create_model():
     
     return LlamaCpp(
-        model_path="static/gpt4all-falcon-q4_0.gguf",
+        model_path="static/replit-code-v1_5-3b-q4_0.gguf", # Path to downloaded LLM
         temperature=0.75,
         # max_tokens=2000,
         top_p=1,
