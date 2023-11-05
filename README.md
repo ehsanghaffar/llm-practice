@@ -2,7 +2,8 @@
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
-![Llama2 Self-hosted Chatbot API](./static/banner.png)
+<img src='./static/banner.png' style="border-radius: 5px; margin: 4px 0" width='200'>
+
 
 > Llama2 Self-hosted Chatbot API
 
