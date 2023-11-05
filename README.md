@@ -2,6 +2,8 @@
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
+![Llama2 Self-hosted Chatbot API](./static/banner.png)
+
 > Llama2 Self-hosted Chatbot API
 
 This repository contains a FastAPI application that serves as a local personal chatbot API. It allows you to interact with the Llama2 LLM (and other open-source LLMs) to have natural language conversations, generate text, and perform various language-related tasks.
