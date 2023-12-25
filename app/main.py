@@ -1,3 +1,4 @@
+import os
 import logging
 from typing import Optional
 from fastapi.responses import JSONResponse, UJSONResponse
@@ -12,6 +13,8 @@ from concurrent.futures import ProcessPoolExecutor
 from app.callback_manager import LoggingCallbackHandler
 
 from app.logger import configure_logging
+from dotenv import load_dotenv, find_dotenv
+load_dotenv(find_dotenv())
 
 
 from . import (
@@ -20,6 +23,9 @@ from . import (
 )
 
 settings = config.get_settings()
+
+ENV_MODEL_PATH = os.environ.get("MODEL_PATH")
+
 
 def create_app() -> FastAPI:
     configure_logging()
@@ -56,8 +62,6 @@ async def catch_exceptions_middleware(request: Request, call_next):
 
 app.middleware('http')(catch_exceptions_middleware)
 
-# BASE_DIR = pathlib.Path(__file__).resolve().parent
-
 template = """Question: {question}
 
 Answer: Be sure to give the most correct answer to the question."""
@@ -72,9 +76,9 @@ callback_manager = BaseCallbackManager([LoggingCallbackHandler()])
 sbertmodel = None
 
 def create_model():
-    
+    print(ENV_MODEL_PATH)
     return LlamaCpp(
-        model_path="static/replit-code-v1_5-3b-q4_0.gguf", # Path to downloaded LLM
+        model_path=ENV_MODEL_PATH,
         temperature=0.75,
         # max_tokens=2000,
         top_p=1,
@@ -100,7 +104,7 @@ def model_predict(question: str):
 
 @app.get("/")
 def read_index(q:Optional[str] = None):
-    return {"hello": "world"}
+    return {"hello": q}
 
 @app.post("/chat")
 async def chatting(request: schema.ChatRequest):

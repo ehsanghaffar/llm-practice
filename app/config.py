@@ -14,6 +14,7 @@ class Settings(BaseSettings):
 
   # Logger top level
   log_level: LogLevel = LogLevel.DEBUG
+  model_path: str = "gpt4all-falcon-q4_0.gguf"
   class Config:
         env_file = '.env'
 
