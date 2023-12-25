@@ -7,3 +7,4 @@ pydantic-settings==2.0.3
 ujson==5.8.0
 loguru==0.7.2
 ctransformers==0.2.27
+huggingface_hub==0.18.0

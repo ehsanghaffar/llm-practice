@@ -157,4 +157,4 @@ cython_debug/
 venv
 cookbook
 .venv_llm
-cookbook/*
+cookbook
