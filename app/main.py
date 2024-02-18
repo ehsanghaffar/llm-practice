@@ -73,10 +73,7 @@ prompt = PromptTemplate(template=template, input_variables=["question"])
 callback_manager = BaseCallbackManager([LoggingCallbackHandler()])
 
 
-sbertmodel = None
-
 def create_model():
-    print(ENV_MODEL_PATH)
     return LlamaCpp(
         model_path=ENV_MODEL_PATH,
         temperature=0.75,
