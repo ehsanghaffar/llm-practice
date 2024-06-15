@@ -1,4 +1,4 @@
-# EinLLM
+# LLMs Practice
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
@@ -20,13 +20,13 @@ This repository contains a FastAPI application that serves as a local personal c
 1. Clone this repository to your local machine:
 
    ```shell
-   git clone https://github.com/ehsanghaffar/llama2-fastapi-chatbot.git
+   git clone https://github.com/ehsanghaffar/llm-practice
    ```
 
 2. Change the working directory to the project folder:
 
    ```shell
-   cd llama2-fastapi-chatbot
+   cd llm-practice
    ```
 
 3. Install the required dependencies:
