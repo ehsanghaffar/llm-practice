@@ -9,6 +9,8 @@
 
 This repository contains a FastAPI application that serves as a local personal chatbot API. It allows you to interact with the Llama2 LLM (and other open-source LLMs) to have natural language conversations, generate text, and perform various language-related tasks.
 
+The implementation of the Model Context Protocol (MCP) in the RAG app allows AI models to seamlessly interact with vector databases via a standardized interface, enhancing the process of Retrieval-Augmented Generation (RAG).
+
 ## Features
 
 - Chat with the Llama2 LLM or other open-source LLMs.
